@@ -1,0 +1,33 @@
+{% extends 'jobs/base.html' %}
+
+{% block content %}
+<h2>Manage Applications for {{ job.title }}</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Status</th>
+            <th>Resume</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for application in applications %}
+        <tr>
+            <td>{{ application.name }}</td>
+            <td>{{ application.email }}</td>
+            <td>{{ application.phone }}</td>
+            <td>{{ application.status }}</td>
+            <td>
+                <a href="{{ application.resume.url }}" download>Download Resume</a>
+            </td>
+            <td>
+                <a href="{% url 'update_application_status' application.id %}">Update Status</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

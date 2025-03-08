@@ -1,0 +1,22 @@
+{% extends 'jobs/base.html' %}
+
+{% block content %}
+<h2>Employer Dashboard</h2>
+<h3>Your Profile</h3>
+<p>Company Name: {{ employer.company_name }}</p>
+<p>Company Address: {{ employer.company_address }}</p>
+<a href="{% url 'edit_employer_profile' %}">Edit Profile</a>
+
+<h3>Your Posted Jobs</h3>
+<ul>
+    {% for job in jobs %}
+    <li>
+        {{ job.title }} - {{ job.location }}
+        <a href="{% url 'job_detail' job.id %}"> View Job </a>
+        <a href="{% url 'edit_job' job.id %}">Edit</a>
+        <a href="{% url 'manage_applications' job.id %}">Manage Applications</a>
+    </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'post_job' %}">Post a New Job</a>
+{% endblock %}

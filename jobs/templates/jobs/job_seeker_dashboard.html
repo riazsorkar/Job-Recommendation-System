@@ -1,0 +1,23 @@
+{% extends 'jobs/base.html' %}
+
+{% block content %}
+<h2>Job Seeker Dashboard</h2>
+<h3>Your Profile</h3>
+<p>Name: {{ job_seeker.user }}</p>
+<p>Skills: {{ job_seeker.skills }}</p>
+<p>Experience: {{ job_seeker.experience }} years</p>
+<p>Expected Salary: {{ job_seeker.expected_salary }}</p>
+<p>Address: {{ job_seeker.address }}</p>
+<p>Education: {{ job_seeker.education }}</p>
+
+<a href="{% url 'edit_profile' %}">Edit Profile</a>
+
+<h3>Your Applications</h3>
+<ul>
+    {% for application in applications %}
+    <li>
+        {{ application.job.title }} - {{ application.status }}
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

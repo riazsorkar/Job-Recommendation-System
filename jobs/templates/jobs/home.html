@@ -1,0 +1,17 @@
+{% extends 'jobs/base.html' %}
+
+{% block content %}
+<a class="nav-link" href="{% url 'home' %}">Job Listings</a>
+<ul>
+    {% for job in jobs %}
+    <li>
+        {{ job.title }} - {{ job.location }}
+        <a href="{% url 'job_detail' job.id %}"> View Job </a>
+
+        {% if user.is_authenticated and not user.employer %}
+            <a href="{% url 'apply_job' job.id %}">Apply job</a>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
