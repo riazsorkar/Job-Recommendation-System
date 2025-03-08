@@ -5,9 +5,47 @@ from .forms import JobSeekerSignUpForm, EmployerSignUpForm
 from django.contrib.auth.decorators import login_required
 from .models import Employer, JobSeeker, Job, Application
 
+from django.core.paginator import Paginator
+from .forms import JobSearchForm
+
 def home(request):
+    # Get all jobs
     jobs = Job.objects.all()
-    return render(request, 'jobs/home.html', {'jobs': jobs})
+
+    # Handle search query and filters
+    form = JobSearchForm(request.GET or None)
+    if form.is_valid():
+        query = form.cleaned_data['query']
+        location = form.cleaned_data['location']
+        min_salary = form.cleaned_data['min_salary']
+        max_salary = form.cleaned_data['max_salary']
+        job_type = form.cleaned_data['job_type']
+
+        # Apply filters
+        if query:
+            jobs = jobs.filter(
+                title__icontains=query
+            ) | jobs.filter(
+                skills_required__icontains=query
+            )
+        if location:
+            jobs = jobs.filter(location__icontains=location)
+        if min_salary:
+            jobs = jobs.filter(salary__gte=min_salary)
+        if max_salary:
+            jobs = jobs.filter(salary__lte=max_salary)
+        if job_type:
+            jobs = jobs.filter(job_type=job_type)
+
+    # Paginate the jobs
+    paginator = Paginator(jobs, 10)  # Show 10 jobs per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'jobs/home.html', {
+        'form': form,
+        'page_obj': page_obj,
+    })
 
 def job_seeker_signup(request):
     if request.method == 'POST':
@@ -44,6 +82,17 @@ def employer_signup(request):
         form = EmployerSignUpForm()
     return render(request, 'jobs/employer_signup.html', {'form': form})
 
+
+
+
+
+
+
+
+
+
+
+
 @login_required
 def job_seeker_dashboard(request):
     try:
@@ -54,6 +103,23 @@ def job_seeker_dashboard(request):
         # If the user is not a Job Seeker, redirect to the home page or show an error
         return redirect('home')
 
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
 @login_required
 def employer_dashboard(request):
     try:
@@ -213,3 +279,25 @@ def update_application_status(request, application_id):
     else:
         form = ApplicationStatusForm(instance=application)
     return render(request, 'jobs/update_application_status.html', {'form': form, 'application': application})
+
+
+
+
+
+from django.shortcuts import render, redirect
+from .models import JobSeeker, Job
+from .utils import recommend_jobs
+
+@login_required
+def recommended_jobs(request):
+    try:
+        job_seeker = JobSeeker.objects.get(user=request.user)
+        jobs = Job.objects.all()  # Get all jobs
+        recommended_jobs = recommend_jobs(job_seeker, jobs)  # Get recommended jobs
+        # paginator = Paginator(jobs, 2)  # Show 10 jobs per page
+        # page_number = request.GET.get('page')
+        # page_obj = paginator.get_page(page_number)
+        return render(request, 'jobs/recommended_jobs.html', {'recommended_jobs': recommended_jobs})
+    except JobSeeker.DoesNotExist:
+        # If the user is not a Job Seeker, redirect to the home page or show an error
+        return redirect('home')

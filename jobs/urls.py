@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
 
+
 urlpatterns = [
     path('', views.home, name='home'),
     path('job-seeker-signup/', views.job_seeker_signup, name='job_seeker_signup'),
@@ -20,4 +21,5 @@ urlpatterns = [
     path('edit-job/<int:job_id>/', views.edit_job, name='edit_job'),
     path('manage-applications/<int:job_id>/', views.manage_applications, name='manage_applications'),
     path('update-application-status/<int:application_id>/', views.update_application_status, name='update_application_status'),
+    path('recommended-jobs/', views.recommended_jobs, name='recommended_jobs'),
 ]

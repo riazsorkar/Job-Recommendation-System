@@ -1,30 +1,20 @@
 {% extends 'jobs/base.html' %}
 
 {% block content %}
-<h2>Job Listings</h2>
-<a href="{% url 'recommended_jobs' %}">View Recommended Jobs</a>
-
-<!-- Search Form -->
-<form method="get" action="{% url 'home' %}">
-    {{ form.as_p }}
-    <button type="submit">Search</button>
-</form>
-
-<!-- Job Listings -->
+<h2>Recommended Jobs</h2>
 <ul>
-    {% for job in page_obj %}
+    {% for job in recommended_jobs %}
     <li>
-        {{ job.title }} - {{ job.location }}
-        <a href="{% url 'job_detail' job.id %}"> View Job </a>
-
-        {% if user.is_authenticated and not user.employer %}
-            <a href="{% url 'apply_job' job.id %}">Apply job</a>
-        {% endif %}
+        <a href="{% url 'job_detail' job.id %}">{{ job.title }}</a> - {{ job.skills_required }}
+        <br>
+        <strong>Match Score:</strong> {{ job.similarity_score }}%
     </li>
     {% endfor %}
 </ul>
 
-<!-- Pagination -->
+
+
+{% comment %} <!-- Pagination -->
 <div class="pagination">
     <span class="step-links">
         {% if page_obj.has_previous %}
@@ -41,6 +31,6 @@
             <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
         {% endif %}
     </span>
-</div>
+</div> {% endcomment %}
 
 {% endblock %}

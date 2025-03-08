@@ -70,3 +70,17 @@ class ApplicationStatusForm(forms.ModelForm):
     class Meta:
         model = Application
         fields = ['status']
+
+
+from django import forms
+
+class JobSearchForm(forms.Form):
+    query = forms.CharField(label='Search by Title or Skills', required=False)
+    location = forms.CharField(label='Location', required=False)
+    min_salary = forms.IntegerField(label='Minimum Salary', required=False)
+    max_salary = forms.IntegerField(label='Maximum Salary', required=False)
+    job_type = forms.ChoiceField(
+        label='Job Type',
+        choices=[('', 'All'), ('Full-Time', 'Full-Time'), ('Part-Time', 'Part-Time'), ('Remote', 'Remote')],
+        required=False,
+    )
