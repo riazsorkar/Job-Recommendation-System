@@ -281,7 +281,23 @@ def update_application_status(request, application_id):
     return render(request, 'jobs/update_application_status.html', {'form': form, 'application': application})
 
 
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from .models import Job
 
+@login_required
+def delete_job(request, job_id):
+    job = get_object_or_404(Job, id=job_id)
+
+    # Ensure only the job's employer can delete the job
+    if job.employer.user != request.user:
+        messages.error(request, "You do not have permission to delete this job.")
+        return redirect('employer_dashboard')
+
+    # Delete the job
+    job.delete()
+    messages.success(request, "Job deleted successfully.")
+    return redirect('employer_dashboard')
 
 
 from django.shortcuts import render, redirect
