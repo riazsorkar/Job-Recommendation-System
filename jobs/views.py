@@ -301,3 +301,6 @@ def recommended_jobs(request):
     except JobSeeker.DoesNotExist:
         # If the user is not a Job Seeker, redirect to the home page or show an error
         return redirect('home')
+    
+
+
